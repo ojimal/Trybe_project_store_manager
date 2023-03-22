@@ -9,9 +9,9 @@ const { productsController } = require('../../../src/controllers');
 const { productsService } = require('../../../src/services');
 const { productMock } = require('./mocks/products.controller.mock');
 
-describe('Teste de unidade do productsController', () => {
+describe('Teste de unidade do products.Controller', () => {
 
-  describe('Listando os produtos', () => {
+  describe('Listando todos os produtos', () => {
     it('Deve retornar o estado 200 e a lista', async () => {
       // arrange
       const res = {};
@@ -29,7 +29,7 @@ describe('Teste de unidade do productsController', () => {
 
       // assert
       expect(res.status).to.have.been.calledWith(200);
-      expect(res.json).to.have.been.calledWith(findAllProducts);
+      expect(res.json).to.have.been.calledWith(allProducts);
     });
   });
 
@@ -54,6 +54,7 @@ describe('Teste de unidade do productsController', () => {
       expect(res.status).to.have.been.calledWith(200);
       expect(res.json).to.have.been.calledWith(productMock);
     });
+
         it('Deve retornar o estado 404 e Id não encontrado', async () => {
       // arrange
       const res = {};
