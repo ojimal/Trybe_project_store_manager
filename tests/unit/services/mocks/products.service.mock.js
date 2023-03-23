@@ -1,4 +1,5 @@
-const invalidValue = 'x'
+const invalidValue = 'x';
+const invalidNameLenght = 'abc';
 
 const productsListMock = [
   {
@@ -7,7 +8,16 @@ const productsListMock = [
   },
 ];
 
+const newProductMock = [
+  {
+    "id": 3,
+    "name": "new product"
+  }
+]
+
 module.exports = {
   invalidValue,
   productsListMock,
+  newProductMock,
+  invalidNameLenght,
 };
