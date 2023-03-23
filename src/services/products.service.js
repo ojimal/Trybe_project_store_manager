@@ -15,8 +15,10 @@ const findProductById = async (productId) => {
   return { type: null, message: item };
 };
 
-const addProduct = async (item) => {
-  const addedId = await productsModel.addProduct(item);
+const addProduct = async (name) => {
+  const err = schema.validateProductName(name);
+  if (err.type) return err;
+  const addedId = await productsModel.addProduct(name);
   const addedProduct = await productsModel.findProductById(addedId);
   return { type: null, message: addedProduct };
 };
