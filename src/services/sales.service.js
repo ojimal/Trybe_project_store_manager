@@ -1,4 +1,4 @@
-const { salesModel } = require('../models');
+const { salesModel, productsModel } = require('../models');
 const schema = require('./validations/validationInputsValue');
 
 const addSaleProduct = async (saleProducts) => {
@@ -6,7 +6,7 @@ const addSaleProduct = async (saleProducts) => {
   if (error.type) { return error; }
 
   const checkSalesProducts = await Promise.all(saleProducts.map(async (item) => {
-    const product = await salesModel.findSaleProductById(item.productId);
+    const product = await productsModel.findProductById(item.productId);
     return product;
   }));
 
@@ -23,6 +23,21 @@ const addSaleProduct = async (saleProducts) => {
   return { message: { id, itemsSold: saleProducts } };
 };
 
+const findAllSales = async () => {
+  const result = await salesModel.findAllSales();
+  return result;
+};
+
+const findSaleById = async (saleId) => {
+  const result = await salesModel.findSaleById(saleId);
+  if (result.length < 1) {
+    return { type: 'PRODUCT_NOT_FOUND', message: 'Sale not found' };
+  }
+  return { type: null, message: result };
+};
+
 module.exports = {
   addSaleProduct,
+  findAllSales,
+  findSaleById,
 };
