@@ -44,14 +44,14 @@ describe("Teste de unidade do products.Controller", () => {
       res.json = sinon.stub().returns();
       sinon
         .stub(productsService, "findAllProducts")
-        .resolves({ type: 'SERVER_ERROR', message: 'Internal Server Error' });
+        .resolves({ type: "SERVER_ERROR", message: "Internal Server Error" });
 
       // act
       await productsController.findAllProducts(req, res);
 
       // assert
       expect(res.status).to.have.been.calledWith(500);
-      expect(res.json).to.have.been.calledWith('Internal Server Error');
+      expect(res.json).to.have.been.calledWith("Internal Server Error");
     });
   });
 
@@ -119,7 +119,7 @@ describe("Teste de unidade do products.Controller", () => {
       await productsController.addProduct(req, res);
 
       // assert
-      expect(res.status).to.have.been.calledWith(200);
+      expect(res.status).to.have.been.calledWith(201);
       expect(res.json).to.have.been.calledWith(newProductMock);
     });
 
@@ -145,31 +145,30 @@ describe("Teste de unidade do products.Controller", () => {
       expect(next).to.have.not.been.called;
     });
 
-  it('Deve retornar o estado 404 e "name" length must be > 5', async () => {
-    // arrange
-    const res = {};
-    const req = {
-      body: { name: 'abc' },
-    };
+    it('Deve retornar o estado 404 e "name" length must be > 5', async () => {
+      // arrange
+      const res = {};
+      const req = {
+        body: { name: "abc" },
+      };
 
-    res.status = sinon.stub().returns(res);
-    res.json = sinon.stub().returns();
-    sinon
-      .stub(productsService, "addProduct")
-      .resolves({
-        type: 'INVALID_VALUE',
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon.stub(productsService, "addProduct").resolves({
+        type: "INVALID_VALUE",
         message: '"name" length must be at least 5 characters long',
       });
 
-    // act
-    await productsController.addProduct(req, res);
+      // act
+      await productsController.addProduct(req, res);
 
-    // assert
-    expect(res.status).to.have.been.calledWith(422);
-    expect(res.json).to.have.been.calledWith({ message: '"name" length must be at least 5 characters long' }); });
+      // assert
+      expect(res.status).to.have.been.calledWith(422);
+      expect(res.json).to.have.been.calledWith({
+        message: '"name" length must be at least 5 characters long',
+      });
+    });
   });
 
-  afterEach(function () {
-    sinon.restore();
-  });
+  afterEach(() => sinon.restore());
 });

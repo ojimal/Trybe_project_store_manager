@@ -9,10 +9,11 @@ const addSale = async () => {
 };
 
 const addSaleProduct = async (saleId, productId, quantity) => {
-  await connection.execute(
+  const [{ insertId }] = await connection.execute(
     'INSERT INTO sales_products (sale_id, product_id, quantity) VALUES (?, ?, ?)',
     [saleId, productId, quantity],
   );
+  return insertId;
 };
 
 const findSaleProductById = async (productId) => {

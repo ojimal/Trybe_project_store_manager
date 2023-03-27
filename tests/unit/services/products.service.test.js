@@ -1,26 +1,32 @@
-const chai = require('chai');
-const sinon = require('sinon');
+const chai = require("chai");
+const sinon = require("sinon");
 
-const { productsModel } = require('../../../src/models');
-const { productsService } = require('../../../src/services/');
-const { productsListMock, invalidValue, newProductMock, invalidNameLenght } = require('./mocks/products.service.mock');
+const { productsModel } = require("../../../src/models");
+const { productsService } = require("../../../src/services/");
+const {
+  productsListMock,
+  invalidValue,
+  newProductMock,
+  invalidNameLenght,
+} = require("./mocks/products.service.mock");
 
 const { expect } = chai;
 
-describe('Testes de unidade da camada products.Service', () => {
-  describe('Listando todos os produtos', () => {
-    it('Deve retornar o estado 200 e a lista', async () => {
-      sinon.stub(productsModel, 'findAllProducts').resolves(productsListMock);
+describe("Testes de unidade da camada products.Service", () => {
+  describe("Listando todos os produtos", () => {
+    it("Deve retornar o estado 200 e a lista", async () => {
+      sinon.stub(productsModel, "findAllProducts").resolves(productsListMock);
 
       const result = await productsService.findAllProducts();
 
       expect(result.message).to.deep.equal(productsListMock);
     });
-  }); -
-
-  describe('Listando produto por id', () => {
-    it('Deve retornar o estado 200 e a lista', async () => {
-      sinon.stub(productsModel, 'findProductById').resolves(productsListMock[0]);
+  });
+  -describe("Listando produto por id", () => {
+    it("Deve retornar o estado 200 e a lista", async () => {
+      sinon
+        .stub(productsModel, "findProductById")
+        .resolves(productsListMock[0]);
 
       const result = await productsService.findProductById(2);
 
@@ -28,44 +34,44 @@ describe('Testes de unidade da camada products.Service', () => {
       expect(result.message).to.deep.equal(productsListMock[0]);
     });
 
-    it('Deve retornar o estado 422 e Id invalido', async () => {
-      sinon.stub(productsModel, 'findProductById').resolves('x');
+    it("Deve retornar o estado 422 e Id invalido", async () => {
+      sinon.stub(productsModel, "findProductById").resolves("x");
       const result = await productsService.findProductById(invalidValue);
 
-      expect(result.type).to.equal('INVALID_VALUE');
+      expect(result.type).to.equal("INVALID_VALUE");
       expect(result.message).to.equal('"id" must be a number');
     });
 
-    it('Deve retornar o estado 404 e Id não encontrado', async () => {
-      sinon.stub(productsModel, 'findProductById').resolves(undefined);
+    it("Deve retornar o estado 404 e Id não encontrado", async () => {
+      sinon.stub(productsModel, "findProductById").resolves(undefined);
 
       const result = await productsService.findProductById(99999);
 
-      expect(result.type).to.equal('PRODUCT_NOT_FOUND');
-      expect(result.message).to.equal('Product not found');
-    })
+      expect(result.type).to.equal("PRODUCT_NOT_FOUND");
+      expect(result.message).to.equal("Product not found");
+    });
   });
 
-  describe('Cadastro de um novo produto', function () {
-    it('Deve retornar o estado 200 e o produto', async function () {
-      sinon.stub(productsModel, 'addProduct').resolves(3);
-      sinon.stub(productsModel, 'findProductById').resolves(newProductMock);
+  describe("Cadastro de um novo produto", () => {
+    it("Deve retornar o estado 200 e o produto", async () => {
+      sinon.stub(productsModel, "addProduct").resolves(3);
+      sinon.stub(productsModel, "findProductById").resolves(newProductMock);
 
-      const result = await productsService.addProduct('new product');
+      const result = await productsService.addProduct("new product");
 
       expect(result.type).to.be.equal(null);
       expect(result.message).to.deep.equal(newProductMock);
     });
 
-    it('Deve retornar o estado 422 e "name" length must be > 5', async function () {
+    it('Deve retornar o estado 422 e "name" length must be > 5', async () => {
       const result = await productsService.addProduct(invalidNameLenght);
 
-      expect(result.type).to.be.equal('INVALID_VALUE');
-      expect(result.message).to.deep.equal('"name" length must be at least 5 characters long');
+      expect(result.type).to.be.equal("INVALID_VALUE");
+      expect(result.message).to.deep.equal(
+        '"name" length must be at least 5 characters long'
+      );
     });
   });
 
-  afterEach(function () {
-    sinon.restore();
-  });
+  afterEach(() => sinon.restore());
 });
