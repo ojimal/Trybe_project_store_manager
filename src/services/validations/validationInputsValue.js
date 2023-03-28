@@ -10,6 +10,8 @@ const validateId = (id) => {
 };
 
 const validateProductName = (name) => {
+  if (!name) return { type: 'VALUE_REQUIRED', message: '"name" is required' };
+
   const { error } = nameSchema.validate({ name });
 
   if (error) return { type: 'INVALID_VALUE', message: error.message };
