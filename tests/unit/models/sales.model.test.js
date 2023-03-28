@@ -8,37 +8,45 @@ const { salesModel } = require("../../../src/models");
 const { salesProductMock } = require("./mocks/sales.model.mock");
 
 describe("Teste de unidade do sales.Model", () => {
-  it("testa findSaleProductById", async () => {
-    const [saleMock] = salesProductMock;
-    sinon.stub(connection, "execute").resolves([[saleMock]]);
-
-    const sale = await salesModel.findSaleProductById(1);
-
-    expect(sale).to.be.deep.equal(saleMock);
-  });
-
   it("testa addSale", async () => {
-    const [saleMock] = salesProductMock;
+    const [salesMock] = salesProductMock;
 
     sinon.stub(connection, "execute").resolves([{ insertId: 1 }]);
 
-    const insertId = await salesModel.addSale(saleMock);
+    const result = await salesModel.addSale(salesMock);
 
-    expect(insertId).to.be.deep.equal(1);
+    expect(result).to.be.deep.equal(1);
   });
 
   it("testa addSaleProduct", async () => {
-    const [saleMock] = salesProductMock;
+    const [salesMock] = salesProductMock;
 
     sinon.stub(connection, "execute").resolves([{ insertId: 1 }]);
 
-    const insertId = await salesModel.addSaleProduct(
-      saleMock.saleId,
-      saleMock.productId,
-      saleMock.quantity
+    const result = await salesModel.addSaleProduct(
+      salesMock.saleId,
+      salesMock.productId,
+      salesMock.quantity
     );
 
-    expect(insertId).to.be.deep.equal(1);
+    expect(result).to.be.deep.equal(1);
+  });
+
+  it("testa findAllSales", async () => {
+    sinon.stub(connection, "execute").resolves([salesProductMock]);
+
+    const result = await salesModel.findAllSales();
+
+    expect(result).to.be.deep.equal(salesProductMock);
+  });
+
+  it("testa findSaleById", async () => {
+    const salesMock = salesProductMock;
+    sinon.stub(connection, "execute").resolves([salesProductMock]);
+
+    const result = await salesModel.findSaleById(1);
+
+    expect(result).to.be.deep.equal(salesMock);
   });
 
   afterEach(() => sinon.restore());
