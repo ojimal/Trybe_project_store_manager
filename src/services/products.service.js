@@ -27,10 +27,20 @@ const updateProduct = async (id, name) => {
   const err = schema.validateProductName(name);
   if (err.type) return err;
   const result = await productsModel.updateProduct(id, name);
-  if (result.affectedRows === 0) {
+  if (result.affectedRows < 1) {
     return { type: 'PRODUCT_NOT_FOUND', message: 'Product not found' };
   }
   return { type: null, message: name };
+};
+
+const deleteProduct = async (id) => {
+  const err = schema.validateId(id);
+  if (err.type) return err;
+  const result = await productsModel.deleteProduct(id);
+  if (result.affectedRows < 1) {
+    return { type: 'PRODUCT_NOT_FOUND', message: 'Product not found' };
+  }
+  return { type: null, message: '' };
 };
 
 module.exports = {
@@ -38,4 +48,5 @@ module.exports = {
   findProductById,
   addProduct,
   updateProduct,
+  deleteProduct,
 };
