@@ -11,7 +11,6 @@ const {
   productMock,
   newProductMock,
 } = require("./mocks/products.controller.mock");
-const { validateProductName } = require("../../../src/middlewares");
 
 describe("Teste de unidade do products.Controller", () => {
   describe("Listando todos os produtos", () => {
@@ -129,20 +128,22 @@ describe("Teste de unidade do products.Controller", () => {
       const req = {
         body: {},
       };
-
-      const next = sinon.stub().returns();
       res.status = sinon.stub().returns(res);
       res.json = sinon.stub().returns();
 
+      sinon.stub(productsService, "addProduct").resolves({
+        type: "VALUE_REQUIRED",
+        message: '"name" is required',
+      });
+
       // act
-      await validateProductName(req, res, next);
+      await productsController.addProduct(req, res);
 
       // assert
       expect(res.status).to.have.been.calledWith(400);
       expect(res.json).to.have.been.calledWith({
         message: '"name" is required',
       });
-      expect(next).to.have.not.been.called;
     });
 
     it('Deve retornar o estado 404 e "name" length must be > 5', async () => {
@@ -166,6 +167,50 @@ describe("Teste de unidade do products.Controller", () => {
       expect(res.status).to.have.been.calledWith(422);
       expect(res.json).to.have.been.calledWith({
         message: '"name" length must be at least 5 characters long',
+      });
+    });
+  });
+
+  describe("Testa updateProduct", () => {
+    it("retorna status 200 e o produto atualizado", async () => {
+      const req = {
+        params: { id: 1 },
+        body: { name: "Machado do Thor Stormbreaker" },
+      };
+      const res = {};
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      sinon
+        .stub(productsService, "updateProduct")
+        .resolves({ type: null, message: "Machado do Thor Stormbreaker" });
+
+      await productsController.updateProduct(req, res);
+
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.json).to.have.been.calledWith({
+        id: 1,
+        name: "Machado do Thor Stormbreaker",
+      });
+    });
+    it("retorna status 404 quando não há produto cadastrado", async () => {
+      const req = {
+        params: { id: 999 },
+        body: { name: "Machado do Thor Stormbreaker" },
+      };
+      const res = {};
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      sinon
+        .stub(productsService, "updateProduct")
+        .resolves({ type: "PRODUCT_NOT_FOUND", message: "Product not found" });
+
+      await productsController.updateProduct(req, res);
+
+      expect(res.status).to.have.been.calledWith(404);
+      expect(res.json).to.have.been.calledWith({
+        message: "Product not found",
       });
     });
   });

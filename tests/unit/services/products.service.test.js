@@ -73,5 +73,41 @@ describe("Testes de unidade da camada products.Service", () => {
     });
   });
 
+  describe("Testa updateProduct", () => {
+    it("Deve retornar o estado 200 e o produto", async () => {
+      sinon.stub(productsModel, "updateProduct").resolves(1);
+
+      const result = await productsService.updateProduct(
+        productsListMock[0].id,
+        productsListMock[0].name
+      );
+
+      expect(result.type).to.be.deep.equal(null);
+      expect(result.message).to.be.deep.equal(productsListMock[0].name);
+    });
+    it("Deve retornar o estado 404 product not found", async () => {
+      sinon.stub(productsModel, "findProductById").resolves(undefined);
+
+      const result = await productsService.updateProduct(999, "valid_name");
+
+      expect(result.type).to.be.deep.equal("PRODUCT_NOT_FOUND");
+      expect(result.message).to.be.deep.equal("Product not found");
+    });
+    it("Deve retornar o estado 400 invalid value", async () => {
+
+      const result = await productsService.updateProduct(999, "test");
+
+      expect(result.type).to.be.deep.equal("INVALID_VALUE");
+      expect(result.message).to.be.deep.equal('"name" length must be at least 5 characters long');
+    });
+    it("Deve retornar o estado 400 name is required", async () => {
+
+      const result = await productsService.updateProduct(1);
+
+      expect(result.type).to.be.deep.equal("VALUE_REQUIRED");
+      expect(result.message).to.be.deep.equal('"name" is required');
+    });
+  });
+
   afterEach(() => sinon.restore());
 });

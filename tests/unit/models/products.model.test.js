@@ -39,5 +39,14 @@ describe("Teste de unidade do products.Model", () => {
     });
   });
 
+  describe("Testa updateProduct", () => {
+    it("Deve retornar o estado 200 e o produto", async () => {
+      sinon.stub(connection, "execute").resolves([{ affectedRows: 1 }]);
+
+      const result = await productsModel.updateProduct(productsListMock[0].id, productsListMock[0].name);
+
+      expect(result.affectedRows).to.be.equal(1);
+    });
+  });
   afterEach(() => sinon.restore());
 });

@@ -87,6 +87,14 @@ describe("Teste de unidade do sales.Service", () => {
       expect(result.type).to.be.deep.equal("PRODUCT_NOT_FOUND");
       expect(result.message).to.be.deep.equal("Product not found");
     });
+    it("retorna status 404 e product not found", async () => {
+      sinon.stub(salesModel, "findSaleById").resolves([]);
+
+      const result = await salesService.findSaleById(1);
+
+      expect(result.type).to.be.deep.equal("PRODUCT_NOT_FOUND");
+      expect(result.message).to.be.deep.equal("Sale not found");
+    });
   });
   afterEach(() => sinon.restore());
 });
